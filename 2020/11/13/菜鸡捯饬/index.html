@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>菜鸡捯饬 - Hexo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="1. Promise.allSettled
+Promise.all 或者 Promise.race 有的时候并不能满足我们的需求。比如，我们需要在所有的 promise 都结束的时候做一些操作，而并,"> 
+    <meta name="author" content="John Doe"> 
+    <link rel="alternative" href="atom.xml" title="Hexo" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Hexo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://example.com"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">菜鸡捯饬</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">菜鸡捯饬</h1>
+        <div class="stuff">
+            <span>十一月 13, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h1 id="1-Promise-allSettled"><a href="#1-Promise-allSettled" class="headerlink" title="1. Promise.allSettled"></a>1. Promise.allSettled</h1><blockquote>
+<p>Promise.all 或者 Promise.race 有的时候并不能满足我们的需求。比如，我们需要在所有的 promise 都结束的时候做一些操作，而并不在乎它们是成功还是失败。在没有 Promise.allSettled 之前，我们需要自己去写实现。<br>Promise.allSettled() 方法返回一个在所有给定的 promise 都已经 fulfilled 或 rejected 后的 promise ，并带有一个对象数组，每个对象表示对应的 promise 结果。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">const promise1 &#x3D; Promise.resolve(100);</span><br><span class="line">const promise2 &#x3D; new Promise((resolve, reject) &#x3D;&gt; setTimeout(reject, 100, &#39;info&#39;));</span><br><span class="line">const promise3 &#x3D; new Promise((resolve, reject) &#x3D;&gt; setTimeout(resolve, 200, &#39;name&#39;))</span><br><span class="line"></span><br><span class="line">Promise.allSettled([promise1, promise2, promise3]).</span><br><span class="line">    then((results) &#x3D;&gt; console.log(result));</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;[</span><br><span class="line">    &#x2F;&#x2F;   &#123; status： &#39;fulfilled&#39;, value： 100 &#125;,</span><br><span class="line">    &#x2F;&#x2F;   &#123; status： &#39;rejected&#39;, reason： &#39;info&#39; &#125;,</span><br><span class="line">    &#x2F;&#x2F;    &#123; status： &#39;fulfilled&#39;, value： &#39;name&#39; &#125;</span><br><span class="line">    &#x2F;&#x2F;]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>可以看到，Promise.allSettled() 的成功的结果是一个数组，该数组的每一项是一个对象，每个对象都有一个 status 属性，值为 fulfilled 或 rejected，如果status 的值是 fulfilled，那么该对象还有一个 value 属性，其属性值是对应的 promise 成功的结果；如果 status 的值是 rejected，那么该对象有一个 reason 属性，其属性值是对应的 promise 失败的原因。</p>
+</blockquote>
+<h1 id="2-GlobalThis"><a href="#2-GlobalThis" class="headerlink" title="2.GlobalThis"></a>2.GlobalThis</h1><blockquote>
+<p>JS 中存在一个顶层对象，但是，顶层对象在各种实现里是不统一的。<br>从不同的 JavaScript 环境中获取全局对象需要不同的语句。在 Web 中，可以通过 window、self 取到全局对象，但是在 Web Workers 中，只有 self 可以。在 Node.js 中，它&gt;们都无法获取，必须使用 global。<br>在 globalThis 之前，我们这样去获取全局对象：</p>
+</blockquote>
+<figure class="highlight plain"><figcaption><span>getGlobal </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">    if (typeof self !&#x3D;&#x3D; &#39;undefined&#39;) &#123; return self; &#125;</span><br><span class="line">    if (typeof window !&#x3D;&#x3D; &#39;undefined&#39;) &#123; return window; &#125;</span><br><span class="line">    if (typeof global !&#x3D;&#x3D; &#39;undefined&#39;) &#123; return global; &#125;</span><br><span class="line">    throw new Error(&#39;unable to locate global object&#39;);</span><br><span class="line">&#125;;&#96;&#96;&#96;</span><br><span class="line">&gt;ES2020 中引入 globalThis 作为顶层对象，在任何环境下，都可以简单的通过 globalThis 拿到顶层对象。</span><br><span class="line"></span><br><span class="line"># 3.Nullish coalescing Operator（??）</span><br><span class="line"></span><br><span class="line">&gt;ES2020 新增了一个运算符 ??。当左侧的操作数为 null 或者 undefined时，返回其右侧操作数，否则返回左侧操作数。</span><br><span class="line">&gt;使用 || 操作符，当左侧的操作数为 0 、 null、 undefined、 NaN、 false、 &#39;&#39; 时，都会使用右侧的操作数。如果使用 || 来为某些变量设置默认值，可能会遇到意料之外的行为。</span><br><span class="line">&gt;例如：</span><br><span class="line">&#96;&#96;&#96;const defaultValue &#x3D; 100;</span><br><span class="line">let value &#x3D; someValue || defaultValue;&#96;&#96;&#96;</span><br><span class="line">&gt;当 someValue 转成 boolean 值为 false 时，value 的值都是 defaultValue</span><br><span class="line"></span><br><span class="line">&gt;当 someValue 的值为 0 时 ，我们其实期望 value 值为 0, 但是它却被错误的分配成了 100.</span><br><span class="line">&gt;“??” 操作符可以规避以上问题，它只有在左操作数是 null 或者是 undefined 时，才会返回右侧操作数。</span><br><span class="line">&#96;&#96;&#96;const defaultValue &#x3D; 100;</span><br><span class="line">let value &#x3D; someValue ?? defaultValue;&#x2F;&#x2F;someValue 为 0 ，value 的值是 0&#96;&#96;&#96;</span><br><span class="line"></span><br><span class="line"># 4.Optional Chaining（?.）</span><br><span class="line">&gt;可选链操作符 ?. 允许读取位于连接对象链深处的属性的值，而不必明确验证链中的每个引用是否有效。?. 操作符的功能类似于 . 链式操作符，不同之处在于，在引用为空(nullish, 即 null 或者 undefined) 的情况下不会引起错误，该表达式短路返回值是 undefined。</span><br><span class="line">&gt;例如，我们要访问 info 对象的 animal 的 reptile 的 tortoise。但是我们不确定 animal, reptile 是否存在，因此我们需要这样写：</span><br><span class="line">&gt;”const tortoise &#x3D; info.animal &amp;&amp; info.animal.reptile &amp;&amp; info.animal.reptile.tortoise;“</span><br><span class="line">&gt;因为 null.reptile 或  undefined.reptile 会抛出错误：TypeError： Cannot read property &#39;reptile&#39; of undefined 或 TypeError： Cannot read property &#39;reptile&#39; of null，为了避免报错，如果我们需要访问的属性更深，那么这个这句代码会越来越长。</span><br><span class="line">&gt;而有了可选链操作符 ?.，我们在访问 reptile 之前，不再需要校验 info.animal 的值。同样，在访问 info.animal.reptile.tortoise 之前，也不需要校验 info.animal.reptile 的值。</span><br><span class="line">&gt;上面的代码简化为：</span><br><span class="line">&#96;const tortoise &#x3D; info.animal?.reptile?.tortoise;&#96;</span><br><span class="line"></span><br><span class="line"># 5.开发过程包引用顺序规则：</span><br><span class="line"></span><br><span class="line">&gt;引用外部的在最前面 &gt; 内部的引用 &gt;css引用</span><br><span class="line"></span><br><span class="line"># 6.compose()</span><br></pre></td></tr></table></figure>
+<p> function compose(…funcs:Function[]) {<br>   return function (x:any) {<br>    return funcs.reduce(function (arg, fn) {<br>      return fn(arg);<br>     }, x);<br>   };<br> }</p>
+<pre><code>&gt;创建一个compose函数,返回函数集 functions 组合后的复合函数, 也就是一个函数执行完之后把返回的结果再作为参数赋给下一个函数来执行.compose内的函数执行顺序为从左向右，即最左边的函数（最后一个参数）最先执行，执行完的结果作为参数传递给前一个函数（包裹它的函数），一直到整个函数执行完毕，return一个函数
+
+
+# 7.arr.reduce(callback,[initialValue])
+
+&gt;reduce 为数组中的每一个元素依次执行回调函数，不包括数组中被删除或从未被赋值的元素，接受四个参数：初始值（或者上一次回调函数的返回值），当前元素值，当前索引，调用 reduce 的数组。
+
+&gt;callback （执行数组中每个值的函数，包含四个参数）
+&gt; 1. previousValue （上一次调用回调返回的值，或者是提供的初始值（initialValue））
+&gt; 2. currentValue （数组中当前被处理的元素）
+&gt; 3. index （当前元素在数组中的索引）
+&gt; 4. array （调用 reduce 的数组）</code></pre>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
